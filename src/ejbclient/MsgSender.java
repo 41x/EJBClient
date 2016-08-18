@@ -33,13 +33,15 @@ public class MsgSender extends Thread {
     private TextField dbField;
     private TextField timeField;
     private StatBuilder statBuider;
+    private PersistBeanRemote persistBean;
 
-    public MsgSender(TextField sentCount, TextField dbCount, TextField timePerMsg) {
+    public MsgSender(TextField sentCount, TextField dbCount, TextField timePerMsg,PersistBeanRemote p) {
         count = 0;
         this.stop = false;
         this.sentField = sentCount;
         this.dbField = dbCount;
         this.timeField = timePerMsg;
+        this.persistBean=p;
     }
 
     @Override
@@ -51,12 +53,10 @@ public class MsgSender extends Thread {
             hult();
         }
 
-        PersistBeanRemote persistBean = null;
         QueueSender sender = null;
         QueueSession session = null;
         QueueConnection connection = null;
         try {
-            persistBean = (PersistBeanRemote) ctx.lookup("EJBServer/PersistBean!stateless.PersistBeanRemote");
             Queue queue = (Queue) ctx.lookup("jms/queue/ejb3Queue");
             QueueConnectionFactory factory = (QueueConnectionFactory) ctx.lookup("jms/RemoteConnectionFactory");
             connection = factory.createQueueConnection("jmsMe", "pass");
@@ -68,7 +68,7 @@ public class MsgSender extends Thread {
             hult();
         }
 
-        statBuider = new StatBuilder(sentField, dbField, timeField);
+        statBuider = new StatBuilder(sentField, dbField, timeField,persistBean);
         statBuider.start();
 
         while (!stop) {
@@ -88,6 +88,8 @@ public class MsgSender extends Thread {
                 connection.close();
             }
         } catch (JMSException ex) {
+            System.out.println(ex.getMessage());
+            System.out.println("Failed to close connection");
             Logger.getLogger(MsgSender.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println("Sending thread stopped!");

@@ -5,6 +5,7 @@
  */
 package ejbclient;
 
+import java.util.Properties;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,6 +15,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.stage.Stage;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import stateless.PersistBeanRemote;
 
 /**
  *
@@ -27,9 +32,12 @@ public class EJBClient extends Application {
         Parent root = (Parent) loader.load();
         FXMLDocumentController ctrl = loader.getController();
 
+        
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+
+     
     }
 
     /**
@@ -38,4 +46,8 @@ public class EJBClient extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+    
+
+    
 }

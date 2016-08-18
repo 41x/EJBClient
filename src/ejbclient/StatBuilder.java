@@ -28,32 +28,20 @@ public class StatBuilder extends Thread {
     private TextField timeField;
     private long totalMsg;
     private long count;
+    private PersistBeanRemote persistBean;
 
-    public StatBuilder(TextField sentCount,TextField dbCount,TextField timePerMsg) {
+    public StatBuilder(TextField sentCount,TextField dbCount,TextField timePerMsg,PersistBeanRemote p) {
         this.startTime = System.currentTimeMillis();
         this.stop = false;
         this.sentField=sentCount;
         this.dbField=dbCount;
         this.timeField=timePerMsg;
         this.totalMsg=0;
+        this.persistBean=p;
     }
 
     @Override
     public void run() {
-        InitialContext ctx = createContext("http-remoting://localhost:8080", "jmsMe", "pass");
-        if (ctx == null) {
-            System.out.println("createContext error");
-            hult();
-        }
-
-        PersistBeanRemote persistBean = null;
-        try {
-            persistBean = (PersistBeanRemote) ctx.lookup("EJBServer/PersistBean!stateless.PersistBeanRemote");
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            hult();
-        }
-
         long initDbrecords = persistBean.getDbCount();
         while (!stop || count!=totalMsg) {
             try {
@@ -61,7 +49,7 @@ public class StatBuilder extends Thread {
             } catch (InterruptedException ex) {
                 System.out.println(ex.getMessage());
             }
-            totalMsg = persistBean.getDbCount();// - initDbrecords;
+            totalMsg = persistBean.getDbCount() - initDbrecords;
             if(totalMsg==0) continue;
             long mlsPerMsg = (System.currentTimeMillis() - startTime) / totalMsg;
             Platform.runLater(new Runnable() {
@@ -72,7 +60,7 @@ public class StatBuilder extends Thread {
                     timeField.setText(String.valueOf(mlsPerMsg));
                 }
             });
-            System.out.println(initDbrecords);
+//            System.out.println(initDbrecords);
         }
         System.out.println("Stat thread stopped!");
     }
@@ -81,20 +69,7 @@ public class StatBuilder extends Thread {
         this.stop = true;
     }
 
-    private InitialContext createContext(String url, String login, String password) {
-        Properties jndiProps = new Properties();
-        jndiProps.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
-        jndiProps.put(Context.PROVIDER_URL, url);
-        jndiProps.put(Context.SECURITY_PRINCIPAL, login);
-        jndiProps.put(Context.SECURITY_CREDENTIALS, password);
-        jndiProps.put("jboss.naming.client.ejb.context", true);
-        try {
-            return new InitialContext(jndiProps);
-        } catch (NamingException ex) {
-            System.out.println(ex.getMessage());
-            return null;
-        }
-    }
+    
 
     public void setStop(boolean stop) {
         this.stop = stop;
