@@ -11,6 +11,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.stage.Stage;
 
 /**
@@ -24,16 +26,10 @@ public class EJBClient extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLDocument.fxml"));
         Parent root = (Parent) loader.load();
         FXMLDocumentController ctrl = loader.getController();
+
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        
         stage.show();
-        ctrl.getSlider().valueProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue arg0, Object arg1, Object arg2) {
-                ctrl.getSliderCount().setText(String.valueOf((int) ctrl.getSlider().getValue()));
-            }
-        });
     }
 
     /**
@@ -42,5 +38,4 @@ public class EJBClient extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
 }

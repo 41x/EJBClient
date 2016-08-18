@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="284.0" prefWidth="442.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ejbclient.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="284.0" prefWidth="442.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ejbclient.FXMLDocumentController">
     <children>
       <GridPane prefHeight="313.0" prefWidth="469.0" AnchorPane.leftAnchor="0.0">
         <columnConstraints>
@@ -21,19 +24,14 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="20.0" prefHeight="40.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Очередь max:" GridPane.rowIndex="6">
+            <Label text="Время на доставку одного сообщения:" GridPane.rowIndex="4">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin></Label>
-            <Label text="В очереди:" GridPane.rowIndex="4">
-               <GridPane.margin>
-                  <Insets left="10.0" />
-               </GridPane.margin></Label>
-            <Label text="Сохранено:" GridPane.rowIndex="2">
+            <Label text="Сохранено в БД:" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin></Label>
@@ -41,15 +39,11 @@
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin></Label>
-            <TextField fx:id="queueMax" editable="false" GridPane.rowIndex="7">
-               <GridPane.margin>
-                  <Insets left="10.0" />
-               </GridPane.margin></TextField>
             <TextField fx:id="dbCount" editable="false" GridPane.rowIndex="3">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin></TextField>
-            <TextField fx:id="queueCount" editable="false" GridPane.rowIndex="5">
+            <TextField fx:id="timePerMsg" editable="false" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin></TextField>
@@ -61,17 +55,14 @@
                   <Insets left="10.0" />
                </GridPane.margin></TextField>
             <Button mnemonicParsing="false" onAction="#handleStop" text="Остановить перессылку" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
-              <Label fx:id="label" minHeight="16" minWidth="69" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+              <Label fx:id="label" minHeight="16" minWidth="69" GridPane.columnIndex="1" GridPane.rowIndex="6" />
               <Button fx:id="startButton" onAction="#handleStart" prefWidth="148.0" text="Начать перессылку" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-               <children>
-                  <Slider fx:id="slider" max="1000.0" min="1.0" onDragDetected="#handleDrag" onDragDone="#handleDone" value="1.0" />
-                  <Label fx:id="sliderCount" text="1"/>
-               </children>
                <padding>
                   <Insets left="10.0" top="10.0" />
                </padding>
             </VBox>
+            <Button mnemonicParsing="false" onAction="#handleCleanTable" prefWidth="148.0" text="Удалить все данные" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
          </children>
       </GridPane>
     </children>

@@ -4,8 +4,10 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/iskra/Documents/NetBeansProjects/EJBClient/src/ejbclient/FXMLDocumentController.java</file>
+            <file>file:/C:/Users/iskra/Documents/NetBeansProjects/EJBClient/src/ejbclient/MsgSender.java</file>
             <file>file:/C:/Users/iskra/Documents/NetBeansProjects/EJBClient/src/ejbclient/FXMLDocument.fxml</file>
             <file>file:/C:/Users/iskra/Documents/NetBeansProjects/EJBClient/src/ejbclient/EJBClient.java</file>
+            <file>file:/C:/Users/iskra/Documents/NetBeansProjects/EJBClient/src/ejbclient/StatBuilder.java</file>
         </group>
     </open-files>
 </project-private>

@@ -7,6 +7,7 @@ package ejbclient;
 
 import java.net.URL;
 import java.util.Date;
+import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,50 +23,27 @@ import javafx.scene.control.TextField;
 public class FXMLDocumentController implements Initializable {
 
     @FXML
-    private TextField queueMax;
-    @FXML
-    private TextField dbCount;
-    @FXML
-    private TextField queueCount;
+    private TextField timePerMsg;
     @FXML
     private TextField sentCount;
     @FXML
-    private Label sliderCount;
-    @FXML
-    private Slider slider;
+    private TextField dbCount;
+    private MsgSender sender;
 
     @FXML
     private void handleStart(ActionEvent event) {
-        try {
-            int intervals=(int)slider.getValue()-1;
-            
-            
-            long start = System.currentTimeMillis();
-            System.out.println(new Date() + "\n");
-
-            Thread.sleep(1000);
-            System.out.println(new Date() + "\n");
-
-            long end = System.currentTimeMillis();
-            long diff = end - start;
-            System.out.println("Difference is : " + diff);
-        } catch (Exception e) {
-            System.out.println("Got an exception!");
-        }
-
+        sender = new MsgSender(sentCount, dbCount, timePerMsg);
+        sender.start();
     }
 
     @FXML
     private void handleStop(ActionEvent event) {
-
+        sender.getStatBuider().setStop(true);
+        sender.setStop(true);
     }
 
     @FXML
-    private void handleDrag() {
-    }
-
-    @FXML
-    private void handleDone() {
+    private void handleCleanTable() {
 
     }
 
@@ -74,13 +52,4 @@ public class FXMLDocumentController implements Initializable {
         // TODO
 
     }
-
-    public Label getSliderCount() {
-        return sliderCount;
-    }
-
-    public Slider getSlider() {
-        return slider;
-    }
-
 }
