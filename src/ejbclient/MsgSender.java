@@ -28,7 +28,6 @@ import stateless.PersistBeanRemote;
 public class MsgSender extends Thread {
 
     private boolean stop;
-    private long count;
     private TextField sentField;
     private TextField dbField;
     private TextField timeField;
@@ -36,7 +35,6 @@ public class MsgSender extends Thread {
     private PersistBeanRemote persistBean;
 
     public MsgSender(TextField sentCount, TextField dbCount, TextField timePerMsg,PersistBeanRemote p) {
-        count = 0;
         this.stop = false;
         this.sentField = sentCount;
         this.dbField = dbCount;
@@ -75,8 +73,7 @@ public class MsgSender extends Thread {
             try {
                 ObjectMessage objectMessage = session.createObjectMessage(msg);
                 sender.send(objectMessage);
-                count++;
-                statBuider.setCount(count);
+                statBuider.incCount();
             } catch (JMSException ex) {
                 System.out.println(ex.getMessage());
                 hult();
@@ -116,10 +113,6 @@ public class MsgSender extends Thread {
 
     public void setStop(boolean stop) {
         this.stop = stop;
-    }
-
-    public long getCount() {
-        return count;
     }
 
     public StatBuilder getStatBuider() {

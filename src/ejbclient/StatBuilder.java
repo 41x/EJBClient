@@ -38,6 +38,7 @@ public class StatBuilder extends Thread {
         this.timeField=timePerMsg;
         this.totalMsg=0;
         this.persistBean=p;
+        this.count=0;
     }
 
     @Override
@@ -76,5 +77,8 @@ public class StatBuilder extends Thread {
     }
     public void setCount(long count){
         this.count=count;
+    }
+    public void incCount(){
+        this.count++;
     }
 }
