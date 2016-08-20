@@ -21,10 +21,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import stateless.PersistBeanRemote;
 
-/**
- *
- * @author iskra
- */
+//отвечает за отправку сообщений
 public class MsgSender extends Thread {
 
     private boolean stop;
@@ -45,12 +42,13 @@ public class MsgSender extends Thread {
     @Override
     public void run() {
         String msg = "{\"latitude\":100.0,\"longitude\":200.0,\"horizontalAccuracy\":300,\"speed\":75.0,\"course\":10,\"altitude\":20,\"verticalAccuracy\":5,\"actuality\":\"GPS\",\"timestamp\":1393337635000}";
-        InitialContext ctx = createContext("http-remoting://localhost:8080", "jmsMe", "pass");
+        InitialContext ctx = createContext("http-remoting://127.0.0.1:8080", "jmsMe", "pass");
         if (ctx == null) {
             System.out.println("createContext error");
             hult();
         }
 
+//        ищем очередь
         QueueSender sender = null;
         QueueSession session = null;
         QueueConnection connection = null;
@@ -66,13 +64,16 @@ public class MsgSender extends Thread {
             hult();
         }
 
+//        запускаем поток отвечающий за обновление view
         statBuider = new StatBuilder(sentField, dbField, timeField,persistBean);
         statBuider.start();
 
+//        непрерывно отправляем сообщения в очередь
         while (!stop) {
             try {
                 ObjectMessage objectMessage = session.createObjectMessage(msg);
                 sender.send(objectMessage);
+                //обновляем счетчки отправленных сообщений
                 statBuider.incCount();
             } catch (JMSException ex) {
                 System.out.println(ex.getMessage());

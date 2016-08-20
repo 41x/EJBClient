@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="EJBClient.jar" size="9379" download="eager" />
+    <jar href="EJBClient.jar" size="9166" download="eager" />
     <jar href="lib\EJBServer.jar" size="9994" download="eager" />
     <jar href="lib\javax.jms-3.1.2.2.jar" size="42754" download="eager" />
     <jar href="lib\javax.persistence.jar" size="129793" download="eager" />

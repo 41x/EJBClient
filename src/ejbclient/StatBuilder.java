@@ -5,20 +5,11 @@
  */
 package ejbclient;
 
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.TextField;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import stateless.PersistBeanRemote;
 
-/**
- *
- * @author iskra
- */
+//отвечает за обновление данных view
 public class StatBuilder extends Thread {
 
     private boolean stop;
@@ -43,7 +34,9 @@ public class StatBuilder extends Thread {
 
     @Override
     public void run() {
+        //получаем начальное количество записей в таблице
         long initDbrecords = persistBean.getDbCount();
+        //пока нет команды стоп либо не все сообщения сохранениы в БД
         while (!stop || count!=totalMsg) {
             try {
                 Thread.sleep(100);
@@ -53,6 +46,7 @@ public class StatBuilder extends Thread {
             totalMsg = persistBean.getDbCount() - initDbrecords;
             if(totalMsg==0) continue;
             long mlsPerMsg = (System.currentTimeMillis() - startTime) / totalMsg;
+//            обновляем view
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
@@ -61,7 +55,6 @@ public class StatBuilder extends Thread {
                     timeField.setText(String.valueOf(mlsPerMsg));
                 }
             });
-//            System.out.println(initDbrecords);
         }
         System.out.println("Stat thread stopped!");
     }

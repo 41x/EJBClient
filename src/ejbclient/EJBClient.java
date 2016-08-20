@@ -11,10 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-/**
- *
- * @author iskra
- */
+//инициализация и вывод окна
 public class EJBClient extends Application {
 
     @Override
@@ -22,13 +19,9 @@ public class EJBClient extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLDocument.fxml"));
         Parent root = (Parent) loader.load();
         FXMLDocumentController ctrl = loader.getController();
-
-        
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-
-     
     }
 
     /**

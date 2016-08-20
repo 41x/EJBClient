@@ -8,8 +8,6 @@ package ejbclient;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,10 +17,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import stateless.PersistBeanRemote;
 
-/**
- *
- * @author iskra
- */
 public class FXMLDocumentController implements Initializable {
 
     @FXML
@@ -34,46 +28,43 @@ public class FXMLDocumentController implements Initializable {
     private MsgSender sender;
     private PersistBeanRemote persistBean;
 
+    
     @FXML
     private void handleStart(ActionEvent event) {
+//        ищем по jndi stateless bean отвечающий за запросы в БД
         if (persistBean == null) {
             try {
-                getStBean();
+                initSBean();
             } catch (NamingException ex) {
-                Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            if (persistBean == null) {
-                System.out.println("Could not get bean");
+                System.out.println(ex.getMessage()+"\nCould not get bean");
                 return;
             }
         }
-
+//        запускаем поток отвечающий за отправку
         sender = new MsgSender(sentCount, dbCount, timePerMsg, persistBean);
         sender.start();
     }
 
     @FXML
     private void handleStop(ActionEvent event) {
+//        закрываем потоки отв за отправку и вывод на экран
         sender.getStatBuider().setStop(true);
         sender.setStop(true);
     }
 
+//    очищает таблицу в БД
     @FXML
     private void handleCleanTable() {
         if (persistBean == null) {
             try {
-                getStBean();
+                initSBean();
             } catch (NamingException ex) {
-                Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            if (persistBean == null) {
-                System.out.println("Could not get bean");
+                System.out.println(ex.getMessage()+"\nCould not get bean");
                 return;
             }
         }
         try {
             persistBean.cleanTable();
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -89,34 +80,21 @@ public class FXMLDocumentController implements Initializable {
         this.persistBean = persistBean;
     }
 
-    private PersistBeanRemote getStBean() throws NamingException {
-        InitialContext ctx = createContext("http-remoting://localhost:8080", "jmsMe", "pass");
-        if (ctx == null) {
-            System.out.println("createContext error");
-            return null;
-        }
+    
+    private PersistBeanRemote initSBean() throws NamingException {
+        InitialContext ctx = createContext("http-remoting://127.0.0.1:8080", "jmsMe", "pass");
         persistBean = null;
-        try {
-            persistBean = (PersistBeanRemote) ctx.lookup("EJBServer/PersistBean!stateless.PersistBeanRemote");
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            return null;
-        }
+        persistBean = (PersistBeanRemote) ctx.lookup("EJBServer/PersistBean!stateless.PersistBeanRemote");
         return persistBean;
     }
 
-    private InitialContext createContext(String url, String login, String password) {
+    private InitialContext createContext(String url, String login, String password) throws NamingException {
         Properties jndiProps = new Properties();
         jndiProps.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
         jndiProps.put(Context.PROVIDER_URL, url);
         jndiProps.put(Context.SECURITY_PRINCIPAL, login);
         jndiProps.put(Context.SECURITY_CREDENTIALS, password);
         jndiProps.put("jboss.naming.client.ejb.context", true);
-        try {
-            return new InitialContext(jndiProps);
-        } catch (NamingException ex) {
-            System.out.println(ex.getMessage());
-            return null;
-        }
+        return new InitialContext(jndiProps);
     }
 }
